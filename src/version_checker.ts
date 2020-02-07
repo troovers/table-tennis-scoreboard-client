@@ -88,8 +88,8 @@ export class VersionChecker {
 
                 // Get the users' ID
                 exec(`id -u ${owner}`, (error: any, stdout: any, stderr: any) => {
-                    console.info(`UID: ${stdout}`);
                     let uid = parseInt(stdout);
+                    console.info(`UID: ${uid}`);
 
                     exec('git fetch --all', {
                         uid: uid
