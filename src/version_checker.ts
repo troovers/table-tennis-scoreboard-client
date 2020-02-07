@@ -1,5 +1,6 @@
 import { exec } from "child_process";
 const semver = require('semver');
+var fs = require('fs');
 
 export class VersionChecker {
     async updateAvailable() {
@@ -31,14 +32,17 @@ export class VersionChecker {
         console.info(`git fetch && git checkout tags/${latest} && npm run build`);
 
         return new Promise<void>((resolve, reject) => {
-            exec(`git fetch && git checkout tags/${latest} && npm run build`, (error: any, stdout: any, stderr: any) => {
+            exec(`git fetch && git checkout tags/${latest} && npm install && npm run build`, (error: any, stdout: any, stderr: any) => {
                 if (error) {
                     console.error(`Error updating to latest tag: ${error}`);
                     reject(error);
                     return;
                 }
 
-                console.debug(stdout);
+                // Write the new tag to the file
+                fs.writeFileSync('../.tag', latest);
+
+                console.info(stdout);
 
                 resolve();
             });
@@ -47,28 +51,39 @@ export class VersionChecker {
 
     private currentVersion() {
         return new Promise<string>((resolve, reject) => {
-            exec('git describe --tags', (error: any, stdout: any, stderr: any) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
+            let tag = fs.readFileSync('../.tag', 'utf8');
+            let version = semver.coerce(tag);
+            resolve(version);
 
-                let value = semver.coerce(stdout);
-                resolve(value);
-            });
+            // exec('git describe --tags', (error: any, stdout: any, stderr: any) => {
+            //     if (error) {
+            //         reject(error);
+            //         return;
+            //     }
+
+            //     let value = semver.coerce(stdout);
+            //     resolve(value);
+            // });
         });
     }
 
     private latestVersion() {
         return new Promise<string>((resolve, reject) => {
-            exec('git fetch && git describe --tags $(git rev-list --tags --max-count=1)', (error: any, stdout: any, stderr: any) => {
+            exec('git fetch --all', (error: any, stdout: any, stderr: any) => {
                 if (error) {
                     reject(error);
                     return;
                 }
 
-                let value = stdout;
-                resolve(value);
+                exec('git describe --tags $(git rev-list --tags --max-count=1)', (error: any, stdout: any, stderr: any) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+
+                    let value = stdout;
+                    resolve(value);
+                })
             });
         });
     }
