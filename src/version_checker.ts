@@ -6,9 +6,9 @@ export class VersionChecker {
     async updateAvailable() {
         try {
             let current = await this.currentVersion();
-            let latest = await this.latestVersion();
-
             console.info(`Current version is: ${current}`);
+
+            let latest = await this.latestVersion();
             console.info(`Latest version is: ${latest}`);
 
             return semver.gt(latest, current);
@@ -81,21 +81,25 @@ export class VersionChecker {
 
     private latestVersion() {
         return new Promise<string>((resolve, reject) => {
-            exec('git fetch --all', (error: any, stdout: any, stderr: any) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
+            exec('whoami', (error: any, stdout: any, stderr: any) => {
+                console.info(`whoami: ${stdout}`);
 
-                exec('git describe --tags $(git rev-list --tags --max-count=1)', (error: any, stdout: any, stderr: any) => {
+                exec('git fetch --all', (error: any, stdout: any, stderr: any) => {
                     if (error) {
                         reject(error);
                         return;
                     }
 
-                    let value = stdout;
-                    resolve(value);
-                })
+                    exec('git describe --tags $(git rev-list --tags --max-count=1)', (error: any, stdout: any, stderr: any) => {
+                        if (error) {
+                            reject(error);
+                            return;
+                        }
+
+                        let value = stdout;
+                        resolve(value);
+                    });
+                });
             });
         });
     }
