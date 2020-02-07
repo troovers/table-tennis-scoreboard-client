@@ -57,7 +57,7 @@ export class VersionChecker {
                 resolve(version);
             } catch (error) {
                 // The file does not exist, use an old version
-                reject('1.0.0');
+                resolve('1.0.0');
             }
 
             // exec('git describe --tags', (error: any, stdout: any, stderr: any) => {
