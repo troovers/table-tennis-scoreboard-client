@@ -10,7 +10,7 @@ import { ClientInterface } from './client.interface';
 import { System } from '../system';
 import { BoardService } from './bluetooth/services/board.service';
 
-export class BluetoothClient implements ClientInterface {
+export class BluetoothClient { // implements ClientInterface {
 
     private name: string = 'Telbord';
     private primaryService: any;
