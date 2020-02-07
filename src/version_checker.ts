@@ -81,26 +81,33 @@ export class VersionChecker {
 
     private latestVersion() {
         return new Promise<string>((resolve, reject) => {
-            // Get the users' ID
-            exec('id -u', (error: any, stdout: any, stderr: any) => {
-                console.info(`UID: ${stdout}`);
+            // Get the owner of the .git directory
+            exec("ls -ld .git | awk '{ print $3 }'", (error: any, stdout: any, stderr: any) => {
+                console.info(`Owner: ${stdout}`);
+                let owner = stdout;
 
-                exec('git fetch --all', {
-                    uid: stdout
-                }, (error: any, stdout: any, stderr: any) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
+                // Get the users' ID
+                exec(`id -u ${owner}`, (error: any, stdout: any, stderr: any) => {
+                    console.info(`UID: ${stdout}`);
+                    let uid = parseInt(stdout);
 
-                    exec('git describe --tags $(git rev-list --tags --max-count=1)', (error: any, stdout: any, stderr: any) => {
+                    exec('git fetch --all', {
+                        uid: uid
+                    }, (error: any, stdout: any, stderr: any) => {
                         if (error) {
                             reject(error);
                             return;
                         }
 
-                        let value = stdout;
-                        resolve(value);
+                        exec('git describe --tags $(git rev-list --tags --max-count=1)', (error: any, stdout: any, stderr: any) => {
+                            if (error) {
+                                reject(error);
+                                return;
+                            }
+
+                            let value = stdout;
+                            resolve(value);
+                        });
                     });
                 });
             });
