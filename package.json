@@ -5,7 +5,6 @@
   "main": "src/index.ts",
   "dependencies": {
     "axios": "^0.19.0",
-    "bleno": "^0.5.0",
     "dotenv": "^8.2.0",
     "laravel-echo": "^1.6.1",
     "rpi-led-matrix": "1.6.1",
