@@ -30,21 +30,30 @@ export class App {
     }
 
     private async checkForUpdates() {
-        let updatesAvailable = await this.versionChecker.updateAvailable();
-        if (updatesAvailable) {
-            console.info(`Updates available, downloading..`);
+        return new Promise<string>(async (resolve, reject) => {
+            let updatesAvailable = await this.versionChecker.updateAvailable();
+            if (updatesAvailable) {
+                console.info(`Updates available, downloading..`);
 
-            try {
-                await this.versionChecker.update();
-            } catch (error) {
-                console.error(`Unable to update: ${error}`);
-                return
+                this.client.showMessage('Update downloaden');
+
+                try {
+                    await this.versionChecker.update();
+                } catch (error) {
+                    console.error(`Unable to update: ${error}`);
+                    resolve();
+                    return
+                }
+
+                this.client.showMessage('Update geïnstalleerd, herstarten..');
+
+                console.info(`Updated to new version`);
+
+                // Reboot
+                await System.restart();
             }
 
-            console.info(`Updated to new version`);
-
-            // Reboot
-            await System.restart();
-        }
+            resolve();
+        });
     }
 }

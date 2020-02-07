@@ -29,22 +29,29 @@ export class VersionChecker {
         }
 
         console.info(`Going to update to: ${latest}`);
-        console.info(`git fetch && git checkout tags/${latest} && npm run build`);
 
         return new Promise<void>((resolve, reject) => {
-            exec(`git fetch && git checkout tags/${latest} && npm install && npm run build`, (error: any, stdout: any, stderr: any) => {
+            exec(`git fetch && git checkout tags/${latest}`, (error: any, stdout: any, stderr: any) => {
                 if (error) {
                     console.error(`Error updating to latest tag: ${error}`);
                     reject(error);
                     return;
                 }
 
-                // Write the new tag to the file
-                fs.writeFileSync('../.tag', latest);
+                exec('npm install && npm run build', () => {
+                    if (error) {
+                        console.error(`Error building latest tag: ${error}`);
+                        reject(error);
+                        return;
+                    }
 
-                console.info(stdout);
+                    // Write the new tag to the file
+                    fs.writeFileSync('../.tag', latest);
 
-                resolve();
+                    console.info(stdout);
+
+                    resolve();
+                })
             });
         });
     }

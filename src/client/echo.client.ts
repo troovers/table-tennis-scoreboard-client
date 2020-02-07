@@ -21,7 +21,7 @@ export class EchoClient implements ClientInterface {
         active_match: any
     };
 
-    async initialize(): Promise<void> {
+    constructor() {
         if (process.env.ENV === 'production') {
             this.scoreboard = new Board();
         } else {
@@ -30,8 +30,14 @@ export class EchoClient implements ClientInterface {
 
         this.scoreboard.welcomeScreen();
 
-        await this.setSerialNumber();
+        this.setSerialNumber();
+    }
 
+    async showMessage(text: string): Promise<void> {
+        this.scoreboard.basicText(text);
+    }
+
+    async initialize(): Promise<void> {
         if (this.serialNumber === undefined) {
             return;
         }
