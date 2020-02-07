@@ -53,9 +53,13 @@ function clone_scoreboard_repo() {
         read -r -p 'PORT [6001]: ' port
         port=${port:-6001}
 
-        export ENV=environment HOST=host SOCKET_PORT=port
+        export ENV=$environment HOST=$host SOCKET_PORT=$port
+
+        echo 
+        
         envsubst '${ENV} ${HOST} ${SOCKET_PORT}' < .env.dist > .env
         npm run build
+
     else
         echo -e "\033[33mRepository is not cloned!\033[0m"
     fi

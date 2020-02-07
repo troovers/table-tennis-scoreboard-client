@@ -10,4 +10,4 @@ git checkout tags/$tag
 npm install
 npm run build
 
-supervisorctl restart run-rpi-scoreboard
+sudo supervisorctl restart run-rpi-scoreboard
