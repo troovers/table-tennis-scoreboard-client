@@ -92,9 +92,7 @@ export class VersionChecker {
                     console.info(`UID: ${uid}`);
 
                     try {
-                        exec('git fetch --all', {
-                            uid: uid
-                        }, (error: any, stdout: any, stderr: any) => {
+                        exec('git fetch --all', (error: any, stdout: any, stderr: any) => {
                             if (error) {
                                 reject(error);
                                 return;
