@@ -12,12 +12,6 @@ echo 'Going to initialize the RPI for Scoreboard usage'
 echo 'Navigating to ~/'
 cd ~
 
-function add_locales() {
-    sudo sed -i "s/# nl_NL.UTF-8/nl_NL.UTF-8/g" /etc/locale.gen
-    sudo locale-gen
-    sudo update-locale en_US.UTF-8
-}
-
 function install_required_packages() {
     echo
     echo 'Installing required packages'
@@ -56,7 +50,7 @@ function clone_scoreboard_repo() {
         export ENV=$environment HOST=$host SOCKET_PORT=$port
 
         echo 
-        
+
         envsubst '${ENV} ${HOST} ${SOCKET_PORT}' < .env.dist > .env
         npm run build
 
@@ -91,7 +85,6 @@ EOF
     sudo supervisorctl reread
 }
 
-add_locales
 install_required_packages
 
 echo
