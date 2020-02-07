@@ -7,6 +7,9 @@ export class VersionChecker {
             let current = await this.currentVersion();
             let latest = await this.latestVersion();
 
+            console.info(`Current version is: ${current}`);
+            console.info(`Latest version is: ${latest}`);
+
             return semver.gt(latest, current);
         } catch (error) {
             console.error(`Error checking version: ${error}`);
@@ -51,7 +54,6 @@ export class VersionChecker {
                 }
 
                 let value = semver.coerce(stdout);
-                console.debug(`Current version is: ${value}`);
                 resolve(value);
             });
         });
@@ -66,7 +68,6 @@ export class VersionChecker {
                 }
 
                 let value = stdout;
-                console.debug(`Latest version is: ${value}`);
                 resolve(value);
             });
         });
