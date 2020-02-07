@@ -51,9 +51,14 @@ export class VersionChecker {
 
     private currentVersion() {
         return new Promise<string>((resolve, reject) => {
-            let tag = fs.readFileSync('../.tag', 'utf8');
-            let version = semver.coerce(tag);
-            resolve(version);
+            try {
+                let tag = fs.readFileSync('../.tag', 'utf8');
+                let version = semver.coerce(tag);
+                resolve(version);
+            } catch (error) {
+                // The file does not exist, use an old version
+                reject('1.0.0');
+            }
 
             // exec('git describe --tags', (error: any, stdout: any, stderr: any) => {
             //     if (error) {
