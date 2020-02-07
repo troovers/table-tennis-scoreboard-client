@@ -81,10 +81,13 @@ export class VersionChecker {
 
     private latestVersion() {
         return new Promise<string>((resolve, reject) => {
-            exec('whoami', (error: any, stdout: any, stderr: any) => {
-                console.info(`whoami: ${stdout}`);
+            // Get the users' ID
+            exec('id -u', (error: any, stdout: any, stderr: any) => {
+                console.info(`UID: ${stdout}`);
 
-                exec('git fetch --all', (error: any, stdout: any, stderr: any) => {
+                exec('git fetch --all', {
+                    uid: stdout
+                }, (error: any, stdout: any, stderr: any) => {
                     if (error) {
                         reject(error);
                         return;
