@@ -91,24 +91,28 @@ export class VersionChecker {
                     let uid = parseInt(stdout);
                     console.info(`UID: ${uid}`);
 
-                    exec('git fetch --all', {
-                        uid: uid
-                    }, (error: any, stdout: any, stderr: any) => {
-                        if (error) {
-                            reject(error);
-                            return;
-                        }
-
-                        exec('git describe --tags $(git rev-list --tags --max-count=1)', (error: any, stdout: any, stderr: any) => {
+                    try {
+                        exec('git fetch --all', {
+                            uid: uid
+                        }, (error: any, stdout: any, stderr: any) => {
                             if (error) {
                                 reject(error);
                                 return;
                             }
 
-                            let value = stdout;
-                            resolve(value);
+                            exec('git describe --tags $(git rev-list --tags --max-count=1)', (error: any, stdout: any, stderr: any) => {
+                                if (error) {
+                                    reject(error);
+                                    return;
+                                }
+
+                                let value = stdout;
+                                resolve(value);
+                            });
                         });
-                    });
+                    } catch (error) {
+                        reject(error);
+                    }
                 });
             });
         });
