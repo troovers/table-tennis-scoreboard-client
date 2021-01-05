@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "laravel-echo": "^1.6.1",
     "rpi-led-matrix": "1.6.1",
