@@ -9,7 +9,7 @@
     "laravel-echo": "^1.6.1",
     "rpi-led-matrix": "1.6.1",
     "semver": "^6.3.0",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
